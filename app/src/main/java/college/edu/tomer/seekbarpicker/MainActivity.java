@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     SeekBar sbRed, sbGreen, sbBlue;
     EditText etRed, etGreen, etBlue;
     TextView tvTotal;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         etRed.addTextChangedListener(this);
     }
 
+    boolean fromCode = false;
+
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int color = Color.rgb(sbRed.getProgress(), sbGreen.getProgress(), sbBlue.getProgress());
         String strColor = Integer.toHexString(color);
@@ -38,12 +41,13 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         tvTotal.setBackgroundColor(color);
         tvTotal.setText(String.format("#%s", strColor).toUpperCase());
 
-        if (fromUser && !etFromUser) {
-            etRed.setText(String.format("%d", sbRed.getProgress()));
-            etGreen.setText(String.format("%d", sbGreen.getProgress()));
-            etBlue.setText(String.format("%d", sbBlue.getProgress()));
-        }
+        fromCode = true;
+        etRed.setText(String.format("%d", sbRed.getProgress()));
+        etGreen.setText(String.format("%d", sbGreen.getProgress()));
+        etBlue.setText(String.format("%d", sbBlue.getProgress()));
+        fromCode = false;
     }
+
     public void onStartTrackingTouch(SeekBar seekBar) {
 
     }
@@ -58,37 +62,33 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
-    boolean etFromUser = false;
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        etFromUser = false;
-        try {
-            String etRedValue = etRed.getText().toString();
-            int redProgress = Integer.valueOf(etRedValue);
-            sbRed.setProgress(redProgress);
-        }
-        catch (Exception e){
-            etRed.setError("Numbers only");
-        }
+        if (!fromCode) {
+            try {
+                String etRedValue = etRed.getText().toString();
+                int redProgress = Integer.valueOf(etRedValue);
+                sbRed.setProgress(redProgress);
+            } catch (Exception e) {
+                etRed.setError("Numbers only");
+            }
 
-        try {
-            String etGreenValue = etGreen.getText().toString();
-            int greenProgress = Integer.valueOf(etGreenValue);
-            sbGreen.setProgress(greenProgress);
-        }
-        catch (Exception e){
-            etGreen.setError("Numbers only");
-        }
+            try {
+                String etGreenValue = etGreen.getText().toString();
+                int greenProgress = Integer.valueOf(etGreenValue);
+                sbGreen.setProgress(greenProgress);
+            } catch (Exception e) {
+                etGreen.setError("Numbers only");
+            }
 
-        try {
-            String etBlueValue = etBlue.getText().toString();
-            int blueProgress = Integer.valueOf(etBlueValue);
-            sbBlue.setProgress(blueProgress);
+            try {
+                String etBlueValue = etBlue.getText().toString();
+                int blueProgress = Integer.valueOf(etBlueValue);
+                sbBlue.setProgress(blueProgress);
+            } catch (Exception e) {
+                etBlue.setError("Numbers only");
+            }
         }
-        catch (Exception e){
-            etBlue.setError("Numbers only");
-        }
-        etFromUser = true;
     }
 
     @Override
